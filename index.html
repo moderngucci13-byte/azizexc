@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="uz"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Talabaning yakuniy bahosi — Chiziqli regressiya</title>
+<style>*{box-sizing:border-box}
+body{font-family:system-ui,sans-serif;margin:0;padding:20px 16px 40px;min-height:100vh;color:#1a1a2e;
+background:radial-gradient(circle at 15% 20%,#06b6d488,transparent 45%),radial-gradient(circle at 85% 10%,#7c3aed88,transparent 45%),radial-gradient(circle at 50% 100%,#4f46e599,transparent 55%),linear-gradient(135deg,#1e1b4b,#312e81);}
+.wrap{max-width:720px;margin:0 auto}
+h1{font-size:1.5rem;color:#fff;text-align:center;text-shadow:0 2px 10px #0006;margin:10px 0 18px}
+h1::before{content:"🎓 ";}
+.card{background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border:1px solid #fff8;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 8px 30px #0004}
+h2{font-size:1.1rem;margin-top:0;color:#4f46e5}label{display:block;margin:12px 0 4px;font-weight:600}
+input{width:100%;padding:11px;border:2px solid #d9dcf0;border-radius:10px;font-size:1rem;background:#fff}
+input:focus{outline:none;border-color:#4f46e5;box-shadow:0 0 0 3px #4f46e533}
+button{margin-top:16px;width:100%;padding:13px;border:0;border-radius:10px;background:linear-gradient(90deg,#4f46e5,#7c3aed);color:#fff;font-size:1.05rem;font-weight:600;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-2px);box-shadow:0 6px 16px #4f46e577}
+table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #0001;text-align:left}th{color:#4f46e5}
+.res{font-size:1.7rem;font-weight:800;background:linear-gradient(90deg,#4f46e5,#7c3aed);-webkit-background-clip:text;background-clip:text;color:transparent}.sc{overflow-x:auto}
+@keyframes rgb{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 6px #ff0080) drop-shadow(0 0 18px #ff0080)}33%{filter:drop-shadow(0 0 6px #00ff88) drop-shadow(0 0 18px #00ff88)}66%{filter:drop-shadow(0 0 6px #00b3ff) drop-shadow(0 0 18px #00b3ff)}}
+@keyframes bg{0%{background-position:0% 0%,100% 0%,50% 100%,0 0}50%{background-position:100% 60%,0% 40%,50% 0%,0 0}100%{background-position:0% 0%,100% 0%,50% 100%,0 0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes border{0%{border-color:#ff0080}33%{border-color:#00ff88}66%{border-color:#00b3ff}100%{border-color:#ff0080}}
+body{background-size:140% 140%,140% 140%,140% 140%,auto!important;animation:bg 14s ease-in-out infinite}
+.name{text-align:center;font-size:clamp(2.4rem,11vw,4rem);font-weight:900;letter-spacing:3px;margin:6px 0 0;
+background:linear-gradient(90deg,#ff0040,#ff9900,#ffee00,#00ff88,#00d4ff,#7a5cff,#ff00d4,#ff0040);background-size:300% 100%;
+-webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 4s linear infinite,glow 6s ease-in-out infinite,float 3s ease-in-out infinite}
+.sub{text-align:center;color:#ffffffcc;letter-spacing:6px;font-size:.75rem;text-transform:uppercase;margin-bottom:4px}
+h1{font-size:1.25rem!important;margin-top:4px!important}
+.card{border:2px solid #ff0080;animation:border 6s linear infinite;transition:.3s}.card:hover{transform:translateY(-3px)}
+.sc table tr:hover td{background:#4f46e511}
+
+html{-webkit-text-size-adjust:100%;font-size:clamp(14px,4.2vw,18px)}
+body{overflow-x:hidden;min-height:100vh;min-height:100dvh;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-top:max(16px,env(safe-area-inset-top))}
+.wrap{width:100%}
+input{font-size:16px!important;min-height:46px;-webkit-appearance:none;appearance:none;touch-action:manipulation}
+button{min-height:50px;-webkit-appearance:none;touch-action:manipulation}
+.card{padding:clamp(12px,4vw,20px)}
+table{font-size:.95rem}.sc table{min-width:300px}
+@media(max-width:480px){.name{letter-spacing:1px}.sub{letter-spacing:3px}h1{font-size:1.05rem!important}}
+@media(min-width:900px){.wrap{max-width:760px}}
+</style></head><body><div class="wrap"><div class="sub">✦ tayyorladi ✦</div><div class="name">Ruhshona</div>
+<h1>Talabaning yakuniy bahosi — Ko'p xususiyatli chiziqli regressiya</h1>
+<div class="card"><h2>Yangi qiymatlarni kiriting</h2><div id="form"><label for="x0">Davomat (%)</label><input type="number" inputmode="decimal" step="any" id="x0" value="85"><label for="x1">Oraliq nazorat bali</label><input type="number" inputmode="decimal" step="any" id="x1" value="75"><label for="x2">Mustaqil ish bali</label><input type="number" inputmode="decimal" step="any" id="x2" value="80"><label for="x3">Amaliyot bali</label><input type="number" inputmode="decimal" step="any" id="x3" value="78"><label for="x4">Haftalik o'qish soati</label><input type="number" inputmode="decimal" step="any" id="x4" value="8"></div>
+<button onclick="predict()">Bashorat qilish</button><p>Prognoz: <span class="res" id="out">—</span></p></div>
+<div class="card"><h2>O'rganilgan koeffitsiyentlar</h2><div id="coef"></div></div>
+<div class="card"><h2>Model metrikalari</h2><div id="met"></div></div>
+<div class="card sc"><h2>Haqiqiy va bashorat qiymatlar</h2><div id="cmp"></div></div>
+<script>
+const D={"features": ["attendance_percent", "midterm_score", "independent_work_score", "practice_score", "study_hours_week"], "labels": ["Davomat (%)", "Oraliq nazorat bali", "Mustaqil ish bali", "Amaliyot bali", "Haftalik o'qish soati"], "X": [[60.0, 45.0, 50.0, 48.0, 2.0], [63.0, 52.0, 55.0, 54.0, 2.8], [66.0, 59.0, 60.0, 60.0, 3.6], [69.0, 66.0, 65.0, 66.0, 4.4], [72.0, 73.0, 70.0, 72.0, 5.2], [75.0, 80.0, 75.0, 78.0, 6.0], [78.0, 87.0, 80.0, 84.0, 6.8], [81.0, 94.0, 85.0, 90.0, 7.6], [84.0, 50.0, 90.0, 96.0, 8.4], [87.0, 57.0, 95.0, 52.0, 9.2], [90.0, 64.0, 52.0, 58.0, 2.0], [93.0, 71.0, 57.0, 64.0, 2.8], [96.0, 78.0, 62.0, 70.0, 3.6], [60.0, 85.0, 67.0, 76.0, 4.4], [63.0, 92.0, 72.0, 82.0, 5.2], [66.0, 48.0, 77.0, 88.0, 6.0], [69.0, 55.0, 82.0, 94.0, 6.8], [72.0, 62.0, 87.0, 50.0, 7.6], [75.0, 69.0, 92.0, 56.0, 8.4], [78.0, 76.0, 97.0, 62.0, 9.2]], "y": [49.95, 55.05, 59.45, 67.63, 69.62, 76.22, 83.45, 87.74, 82.01, 74.86, 61.99, 63.59, 70.25, 69.16, 73.46, 67.19, 71.96, 67.58, 75.28, 79.22], "ex": [85, 75, 80, 78, 8]}, UNIT="ball";
+// Normal Equation: beta=(X^T X)^-1 X^T y  (Gauss-Jordan usuli bilan)
+const Xb=D.X.map(r=>[1,...r]), y=D.y, n=Xb.length, p=Xb[0].length;
+const A=Array.from({length:p},(_,i)=>Array.from({length:p},(_,j)=>Xb.reduce((s,r)=>s+r[i]*r[j],0)));
+const B=Array.from({length:p},(_,i)=>Xb.reduce((s,r,k)=>s+r[i]*y[k],0));
+function solve(A,B){const m=A.map((r,i)=>[...r,B[i]]);
+ for(let i=0;i<p;i++){let mx=i;for(let k=i+1;k<p;k++)if(Math.abs(m[k][i])>Math.abs(m[mx][i]))mx=k;[m[i],m[mx]]=[m[mx],m[i]];
+  const d=m[i][i];for(let j=i;j<=p;j++)m[i][j]/=d;
+  for(let k=0;k<p;k++)if(k!==i){const f=m[k][i];for(let j=i;j<=p;j++)m[k][j]-=f*m[i][j];}}
+ return m.map(r=>r[p]);}
+const beta=solve(A,B), f=(x,d=4)=>x.toFixed(d);
+const yp=Xb.map(r=>r.reduce((s,v,i)=>s+v*beta[i],0)), res=y.map((v,i)=>v-yp[i]);
+const SSE=res.reduce((s,r)=>s+r*r,0), MSE=SSE/n, ym=y.reduce((a,b)=>a+b)/n;
+const R2=1-SSE/y.reduce((s,v)=>s+(v-ym)**2,0), MAE=res.reduce((s,r)=>s+Math.abs(r),0)/n;
+document.getElementById("coef").innerHTML="<table><tr><td>b0 (intercept)</td><td>"+f(beta[0])+"</td></tr>"+D.features.map((k,i)=>`<tr><td>${k}</td><td>${f(beta[i+1])}</td></tr>`).join("")+"</table>";
+document.getElementById("met").innerHTML=`<table><tr><td>SSE</td><td>${f(SSE)}</td></tr><tr><td>MSE</td><td>${f(MSE)}</td></tr><tr><td>RMSE</td><td>${f(Math.sqrt(MSE))}</td></tr><tr><td>MAE</td><td>${f(MAE)}</td></tr><tr><td>R²</td><td>${f(R2,6)}</td></tr></table>`;
+document.getElementById("cmp").innerHTML="<table><tr><th>#</th><th>Haqiqiy</th><th>Bashorat</th><th>Xato</th></tr>"+y.map((v,i)=>`<tr><td>${i+1}</td><td>${f(v,2)}</td><td>${f(yp[i],2)}</td><td>${f(res[i],2)}</td></tr>`).join("")+"</table>";
+function predict(){let s=beta[0];for(let i=0;i<D.features.length;i++){const v=parseFloat(document.getElementById("x"+i).value);if(isNaN(v)){document.getElementById("out").textContent="Barcha maydonlarni to'ldiring";return;}s+=beta[i+1]*v;}
+ document.getElementById("out").textContent=f(s,2)+" "+UNIT;}
+predict();
+</script></div></body></html>
